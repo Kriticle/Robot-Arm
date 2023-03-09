@@ -6,11 +6,11 @@ import serial
 #initializing cv2 and Serial
 cap = cv2.VideoCapture(0)
 #ser = serial.Serial(port="COM12",baudrate=115200)
-val = 0
+val = 1
 dist_str = ""
 isHandDetected = 0
 #serial communication function
-def serial():
+def serialComm():
   global val, dist_str, isHandDetected
   while True:
     if val == 1:
@@ -73,9 +73,10 @@ def TrackHand():
         break
 
 t1 = threading.Thread(target=TrackHand)
-t2 = threading.Thread(target=serial)
+t2 = threading.Thread(target=serialComm)
 t1.start()
 t2.start()
 t1.join()
 t2.join()
 cap.release()
+#ser.close()
