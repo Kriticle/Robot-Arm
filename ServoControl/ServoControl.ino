@@ -37,6 +37,9 @@ void loop() {
       }
         newData = false;
     }
+    for (int k=0;k<5;k++){
+      myservo[k].write(0);
+    }
 }
 void checkForNewData () {
     if (Serial.available() >= pcDataLen and newData == false) {
