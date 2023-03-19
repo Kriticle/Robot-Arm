@@ -56,7 +56,8 @@ def TrackHand():
           cx,cy = int(lm.x*w),int(lm.y*h)
           lmList.append([id,cx,cy])
         distY = lmList[0][2] - lmList[5][2]
-        distYf = [lmList[4][2],lmList[8][2], lmList[12][2],lmList[16][2], lmList[20][2]]    
+        distYf = [lmList[0][2]-lmList[4][2],lmList[0][2]-lmList[8][2], lmList[0][2]-lmList[12][2],lmList[0][2]-lmList[16][2], lmList[0][2]-lmList[20][2]]
+        print(distYf)    
         cv2.putText(img,str(1), (lmList[4][1],lmList[4][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(2), (lmList[8][1],lmList[8][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(3), (lmList[12][1],lmList[12][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
