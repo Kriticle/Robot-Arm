@@ -3,12 +3,22 @@ import time
 import cv2
 import mediapipe as mp
 import serial
+from struct import *
+import sys
+import math
 #initializing cv2 and Serial
 cap = cv2.VideoCapture(0)
-#ser = serial.Serial(port="COM12",baudrate=115200)
-val = 1
+try:
+  ser = serial.Serial(port="/dev/ttyACM0",baudrate=115200)
+except:
+  print("Port Error")
+val = 0
 distYf = []
 isHandDetected = 0
+#distance calculate
+def dist(x,y):
+  d = math.sqrt((x**2)+(y**2))
+  return int(d)
 #serial communication function
 def serialComm():
   global val, distYf, isHandDetected
@@ -17,9 +27,15 @@ def serialComm():
       print("done")
       break
     elif isHandDetected == 1:
+      dist_str = ""
+      for i in distYf:
+        dist_str += (str(i)+" ")
+      ser.write(pack('5h',*distYf))
       #ser.write(str(dist_str).encode())
       time.sleep(0.1)
       isHandDetected=0
+    #elif isHandDetected == 0:
+      #print("Hand not in right config")
 #initializing mediapipe utilities
 mp_draw = mp.solutions.drawing_utils
 mp_draw_style = mp.solutions.drawing_styles
@@ -56,7 +72,7 @@ def TrackHand():
           cx,cy = int(lm.x*w),int(lm.y*h)
           lmList.append([id,cx,cy])
         distY = lmList[0][2] - lmList[5][2]
-        distYf = [lmList[0][2]-lmList[4][2],lmList[0][2]-lmList[8][2], lmList[0][2]-lmList[12][2],lmList[0][2]-lmList[16][2], lmList[0][2]-lmList[20][2]]
+        distYf = [dist(lmList[0][1]-lmList[4][1],lmList[0][2]-lmList[4][2]),dist(lmList[0][1]-lmList[8][1],lmList[0][2]-lmList[8][2]), dist(lmList[0][1]-lmList[12][1],lmList[0][2]-lmList[12][2]),dist(lmList[0][1]-lmList[16][1],lmList[0][2]-lmList[16][2]),dist(lmList[0][1]-lmList[20][1],lmList[0][2]-lmList[20][2])]
         print(distYf)    
         cv2.putText(img,str(1), (lmList[4][1],lmList[4][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(2), (lmList[8][1],lmList[8][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
@@ -74,6 +90,7 @@ def TrackHand():
       cv2.imshow('MediaPipe Hands', cv2.flip(img, 1))
       key = cv2.waitKey(1)
       if key==ord("q"):
+        val = 1
         print("done")
         break
 
