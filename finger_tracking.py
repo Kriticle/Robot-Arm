@@ -32,7 +32,7 @@ def serialComm():
         dist_str += (str(i)+" ")
       ser.write(pack('5h',*distYf))
       #ser.write(str(dist_str).encode())
-      time.sleep(0.1)
+      time.sleep(0.2)
       isHandDetected=0
     #elif isHandDetected == 0:
       #print("Hand not in right config")
@@ -43,7 +43,7 @@ mp_hands = mp.solutions.hands
 
 def TrackHand():
   global distYf,val,isHandDetected
-  with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.9, min_tracking_confidence=0.9, max_num_hands=1) as hand:
+  with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.6, min_tracking_confidence=0.9, max_num_hands=1) as hand:
     while cap.isOpened():
       success, img = cap.read()
       if not success:

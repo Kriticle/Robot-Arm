@@ -28,7 +28,7 @@ void loop() {
     checkForNewData();
     if (newData == true) {
       for (int i=0;i<5;i++){
-        val[i] = map (myArray[i],0,320,0,180);
+        val[i] = map (myArray[i],60,250,0,90);
         printf("%d",myArray[i]);
       }
       printf("\n");
@@ -37,9 +37,9 @@ void loop() {
       }
         newData = false;
     }
-    for (int k=0;k<5;k++){
-      myservo[k].write(0);
-    }
+    //for (int k=0;k<5;k++){
+      //myservo[k].write(0);
+    //}
 }
 void checkForNewData () {
     if (Serial.available() >= pcDataLen and newData == false) {
