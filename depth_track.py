@@ -39,12 +39,13 @@ with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.6, min_tracki
         
         myHand=results.multi_hand_landmarks[0]
         for id,lm in enumerate(myHand.landmark):
-          cx,cy,cz = int(lm.x*w),int(lm.y*h),int(lm.z*1000000000)
+          cx,cy,cz = int(lm.x*w),int(lm.y*h),lm.z
           lmList.append([id,cx,cy,cz])
-        print(lmList[0])
+        print(lmList[1])
         #distY = lmList[0][2] - lmList[5][2]
         #distYf = [dist(lmList[0][1]-lmList[4][1],lmList[0][2]-lmList[4][2]),dist(lmList[0][1]-lmList[8][1],lmList[0][2]-lmList[8][2]), dist(lmList[0][1]-lmList[12][1],lmList[0][2]-lmList[12][2]),dist(lmList[0][1]-lmList[16][1],lmList[0][2]-lmList[16][2]),dist(lmList[0][1]-lmList[20][1],lmList[0][2]-lmList[20][2])]
-        #print(distYf)    
+        #print(distYf)
+        previousZ = lmList[0][3]    
         cv2.putText(img,str(1), (lmList[4][1],lmList[4][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(2), (lmList[8][1],lmList[8][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(3), (lmList[12][1],lmList[12][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
@@ -53,6 +54,9 @@ with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.6, min_tracki
         cv2.line(img,(lmList[0][1],lmList[0][2]),(lmList[5][1],lmList[5][2]),(255,255,255),4)
         cv2.circle(img, ((lmList[0][1] + lmList[5][1])//2, (lmList[0][2] + lmList[5][2])//2), 0,(0,0,0),8)
         #cv2.putText(img,str(distY), ((lmList[0][1] + lmList[5][1])//2, (lmList[0][2] + lmList[5][2])//2), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
+        thetaZ = 36 + ((lmList[1][3] - lmList[0][3])*360)
+        thetaZ = int(thetaZ)
+        cv2.putText(img,str(thetaZ), (lmList[0][1],lmList[0][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         '''if distY>0:
           isHandDetected = 1
         else:

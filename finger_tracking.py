@@ -30,7 +30,7 @@ def serialComm():
       dist_str = ""
       for i in distYf:
         dist_str += (str(i)+" ")
-      ser.write(pack('5h',*distYf))
+      ser.write(pack('6h',*distYf))
       #ser.write(str(dist_str).encode())
       time.sleep(0.2)
       isHandDetected=0
@@ -69,10 +69,12 @@ def TrackHand():
           mp_draw_style.get_default_hand_connections_style())
         myHand=results.multi_hand_landmarks[0]
         for id,lm in enumerate(myHand.landmark):
-          cx,cy = int(lm.x*w),int(lm.y*h)
-          lmList.append([id,cx,cy])
+          cx,cy, cz = int(lm.x*w),int(lm.y*h), lm.z
+          lmList.append([id,cx,cy,cz])
         distY = lmList[0][2] - lmList[5][2]
-        distYf = [dist(lmList[0][1]-lmList[4][1],lmList[0][2]-lmList[4][2]),dist(lmList[0][1]-lmList[8][1],lmList[0][2]-lmList[8][2]), dist(lmList[0][1]-lmList[12][1],lmList[0][2]-lmList[12][2]),dist(lmList[0][1]-lmList[16][1],lmList[0][2]-lmList[16][2]),dist(lmList[0][1]-lmList[20][1],lmList[0][2]-lmList[20][2])]
+        thetaZ = 36 + ((lmList[1][3] - lmList[0][3])*360)
+        thetaZ = int(thetaZ) - 30
+        distYf = [dist(lmList[0][1]-lmList[4][1],lmList[0][2]-lmList[4][2]),dist(lmList[0][1]-lmList[8][1],lmList[0][2]-lmList[8][2]), dist(lmList[0][1]-lmList[12][1],lmList[0][2]-lmList[12][2]),dist(lmList[0][1]-lmList[16][1],lmList[0][2]-lmList[16][2]),dist(lmList[0][1]-lmList[20][1],lmList[0][2]-lmList[20][2]),thetaZ]
         print(distYf)    
         cv2.putText(img,str(1), (lmList[4][1],lmList[4][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         cv2.putText(img,str(2), (lmList[8][1],lmList[8][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
@@ -82,6 +84,7 @@ def TrackHand():
         cv2.line(img,(lmList[0][1],lmList[0][2]),(lmList[5][1],lmList[5][2]),(255,255,255),4)
         cv2.circle(img, ((lmList[0][1] + lmList[5][1])//2, (lmList[0][2] + lmList[5][2])//2), 0,(0,0,0),8)
         cv2.putText(img,str(distY), ((lmList[0][1] + lmList[5][1])//2, (lmList[0][2] + lmList[5][2])//2), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
+        cv2.putText(img,str(thetaZ), (lmList[0][1],lmList[0][2]), cv2.FONT_HERSHEY_SIMPLEX,1,(209,80,0,255),3)
         if distY>0:
           isHandDetected = 1
         else:
